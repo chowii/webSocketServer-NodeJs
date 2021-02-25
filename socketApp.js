@@ -5,7 +5,7 @@ const WebSocket = require('ws');
 
 const wss = new WebSocket.Server({server: server});
 
-wss.on('connection', function connection(socket) {
+wss.on('connection', socket => {
     console.log('A new client Connected!');
     // socket.send('Welcome New Client!');
 
@@ -13,15 +13,15 @@ wss.on('connection', function connection(socket) {
         if (message !== 'test') {
             let data = JSON.parse(message);
 
-            console.log('received: %s %s', data, new Date(data.time).toString());
+            console.log('received: %s %s %s', data, data.byteData.length, new Date(data.time).toString());
             console.log(typeof message)
 
             wss.clients.forEach(function each(client) {
-                if (client !== socket && client.readyState === WebSocket.OPEN) {
+                // if (client !== socket && client.readyState === WebSocket.OPEN) {
                     console.log(`client: ${client}`)
-                    client.send(message);
-                    // socket.send(message);
-                }
+                    client.send(message)
+                    socket.send(message);
+                // }
             })
         }
     });
